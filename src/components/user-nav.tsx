@@ -43,7 +43,7 @@ export default function UserNav() {
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none flex items-center gap-1">
               {session?.user.name}
-              <span className="text-[11px] bg-purple-300 px-[3px] rounded-sm py-[2px]">{session?.user.role}</span>
+              <span className="text-[11px] dark:text-black bg-purple-300 px-[3px] rounded-sm py-[2px]">{session?.user.role}</span>
             </p>
             <p className="text-xs leading-none text-muted-foreground">
               {session?.user.email}
