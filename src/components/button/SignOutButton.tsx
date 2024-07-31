@@ -10,6 +10,6 @@ type SignOutButtonProps = {
 
 export default function SignOutButton({ variant = "default", size = "default" }: SignOutButtonProps) {
   return (
-    <Button variant={variant} size={size} onClick={() => signOut()}>Sign out</Button>
+    <Button className="" variant={variant} size={size} onClick={() => signOut()}>Sign out</Button>
   );
 }

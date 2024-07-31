@@ -5,24 +5,23 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -37,7 +36,9 @@ const formSchema = z.object({
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,15 +46,18 @@ export default function LoginForm() {
       password: "",
     },
   });
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
     const response = await signIn("credentials", {
       empId: values.empId,
       password: values.password,
       redirect: false
     })
+    
     if(!response?.error) {
-      router.push("/");
+      const redirect = searchParams.get('redirect') ? searchParams.get('redirect') : "";
+      router.push("/" + redirect);
+      
       router.refresh();
     } else {
       toast({
@@ -62,6 +66,7 @@ export default function LoginForm() {
         description: "There was a problem with your request.",
       })
     }
+    setLoading(false);
   }
 
   return (
@@ -110,7 +115,9 @@ export default function LoginForm() {
             </div>
 
             <div className="mt-8 flex flex-col gap-3">
-              <Button type="submit" className="w-full bg-blue-600">Login</Button>
+              <Button type="submit" className="w-full bg-blue-500" disabled={loading}>
+                {loading ? <Loader2 className="animate-spin"/> : "Login"}
+              </Button>
               <SignInButton provider={{ id: "google", name: "Google" }} />
             </div>
             

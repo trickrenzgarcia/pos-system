@@ -5,6 +5,8 @@ import SessionProvider from "@/components/SessionProvider";
 import { auth } from "@/drizzle/auth";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { redirect } from "next/navigation";
+import { Toaster } from "@/components/ui/toaster";
+import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,7 +34,9 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <main>
+              {session && session.user.role === "admin" && <Navbar />}
               {children}
+              <Toaster />
             </main>
           </ThemeProvider>
         </SessionProvider>

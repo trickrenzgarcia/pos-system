@@ -73,6 +73,9 @@ export const {
         empId: dbUser.empId,
         role: dbUser.role
       };
+    },
+    async authorized({ auth }) {
+      return !!auth;
     }
   },
   secret: process.env.NEXTAUTH_SECRET,

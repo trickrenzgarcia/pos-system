@@ -12,11 +12,16 @@ export const metadata = {
   description: "Sign in to your account",
 };
 
-export default async function LoginPage() {
-  const session = await auth();
+type LoginPageParams = {
+  params: string | undefined,
+  searchParams?: { redirect: string };
+}
 
+export default async function LoginPage({ params, searchParams }: LoginPageParams) {
+  const session = await auth();
+  
   if(session) {
-    redirect("/");
+    redirect('/')
   }
 
   return (
@@ -33,7 +38,7 @@ export default async function LoginPage() {
           <div className="flex items-center gap-4">
             <ModeToggle />
             <Link href="/demo">
-              <Button variant="default" size="default">Demo</Button>
+              <Button variant="default" size="default" className="bg-blue-500">Demo</Button>
             </Link>
           </div>
         </nav>
@@ -41,7 +46,7 @@ export default async function LoginPage() {
       <div className="w-full flex flex-col justify-center items-center gap-8">
         <LoginForm />
         <footer>
-          <p className="text-center text-sm text-gray-500">© 2021 Brojava. All rights reserved.</p>
+          <p className="text-center text-sm text-gray-500">© 2024 Brojava. All rights reserved.</p>
         </footer>
       </div>
     </div>
