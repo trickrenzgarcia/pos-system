@@ -23,11 +23,11 @@ export default function MainNav() {
           Dashboard
         </Link>
         <Link
-          href="/customers"
+          href="/inventory"
           className={cn("transition-colors hover:text-foreground/80", 
-          pathname === "/customers" ? "text-foreground font-semibold" : "text-foreground/60")}
+          pathname === "/inventory" ? "text-foreground font-semibold" : "text-foreground/60")}
           >
-          Customers
+          Inventory
         </Link>
         <Link
           href="/products"

@@ -1,8 +1,15 @@
 import { auth } from '@/drizzle/auth';
 import { redirect } from 'next/navigation';
-import React from 'react'
-import SideNav from './side-nav';
 
+
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 export default async function ProductsPage() {
   const session = await auth();
 
@@ -11,8 +18,14 @@ export default async function ProductsPage() {
   }
 
   return (
-    <div>
-      asdasd
+    <div className='w-full space-y-4 py-4 px-5'>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbPage className='font-bold'>Products</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
     </div>
   )
 }
