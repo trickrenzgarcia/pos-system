@@ -6,6 +6,7 @@ import { auth } from "@/drizzle/auth";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { redirect } from "next/navigation";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -37,6 +38,7 @@ export default async function RootLayout({
               {session && session.user.role === "admin" && <Navbar />}
               {children}
               <Toaster />
+              <SonnerToaster />
             </main>
           </ThemeProvider>
         </SessionProvider>

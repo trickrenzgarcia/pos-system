@@ -25,6 +25,7 @@ interface NavProps {
 
 export function Nav({ links, isCollapsed }: NavProps) {
   const pathname = usePathname();
+
   return (
     <div
       data-collapsed={isCollapsed}
@@ -64,10 +65,8 @@ export function Nav({ links, isCollapsed }: NavProps) {
               href={link.link}
               className={cn(
                 buttonVariants({ variant: link.variant, size: "sm" }),
-                pathname === link.link &&
-                  " dark:bg-blue-600 dark:text-white dark:hover:text-white hover:bg-blue-600 hover:text-white",
                 "justify-start",
-                pathname === link.link && "bg-blue-600 text-muted"
+                pathname === link.link && "dark:bg-blue-600 bg-blue-600 text-muted dark:text-white dark:hover:text-white hover:bg-blue-600 hover:text-white",
               )}
             >
               <link.icon className="mr-2 h-4 w-4" />

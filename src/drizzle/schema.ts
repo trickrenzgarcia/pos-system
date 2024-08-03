@@ -5,8 +5,29 @@ import {
   primaryKey,
   integer,
   pgEnum,
+  uuid,
+  real,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
+
+export const product = pgTable("product", {
+  id: uuid("id").notNull().primaryKey(),
+  slug: text("slug").notNull().unique(),
+  name: text("name").notNull(),
+  price: real("price").notNull().default(0.0),
+  stock: integer("stock").notNull().default(0),
+  category: text("category").notNull(),
+  image: text("image"),
+  created_at: timestamp("created_at", { mode: "date" }).notNull(),
+});
+
+export const categories = pgTable("category", {
+  id: uuid("id").notNull().primaryKey(),
+  slug: text("slug").notNull().unique(),
+  category: text("category").notNull().unique(),
+  icon: text("icon").notNull(),
+  created_at: timestamp("created_at", { mode: "date" }).notNull(),
+})
 
 export const rolesEnum = pgEnum("role", ["user", "admin"]);
 

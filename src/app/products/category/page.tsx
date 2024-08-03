@@ -1,47 +1,29 @@
-"use client"
+import CategoryItems, { type Category } from './category-items'
+import { redirect } from "next/navigation"
+import ProductBreadcrumb from "../_components/breadcrumb"
+import { auth } from '@/drizzle/auth'
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import CategoryItems from './category-items'
-import { useRouter } from "next/navigation"
-import { useSession } from "next-auth/react"
+export default async function Category() {
+  const session = await auth();
+  const categories: Category[] = await fetch(process.env.BASE_URL+'/api/products/category', {
+    cache: 'no-store',
+    next: {
+      tags: ['category']
+    }
+  }).then(res => res.json())
 
-
-
-export default function Category() {
-  const router = useRouter()
-  const session = useSession()
-
-  if (!session.data) {
-    router.push('/auth/login')
-  } else if (session.data.user.role !== 'admin'){
-    router.push('/access-denied');
+  if (!session) {
+    redirect('/auth/login')
+  } else if (session.user.role !== 'admin'){
+    redirect('/access-denied');
   } else {
     return (
       <div className='w-full space-y-4 py-4 px-5'>
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink className="cursor-pointer" onClick={() => router.push('/products')}>Products</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className='font-bold'>Category</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+        <ProductBreadcrumb page='Category' />
         <div className='w-full'>
-          <CategoryItems />
+          <CategoryItems categories={categories} />
         </div>
       </div>
     )
   }
-
-  
 }
