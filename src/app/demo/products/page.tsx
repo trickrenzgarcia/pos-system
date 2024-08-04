@@ -1,6 +1,3 @@
-import { auth } from '@/drizzle/auth';
-import { redirect } from 'next/navigation';
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,17 +7,12 @@ import {
 import {
   AddProduct,
   ProductsDataTable
-} from '@/app/products/_components';
+} from '@/app/demo/products/_components';
 import { getCategories, getProducts } from '@/app/actions';
 
 export default async function ProductsPage() {
-  const session = await auth();
   const categories = await getCategories()
   const products = await getProducts()
-
-  if(!session) {
-    redirect("/auth/login?redirect=products");
-  }
 
   return (
     <div className='w-full py-4 px-5'>

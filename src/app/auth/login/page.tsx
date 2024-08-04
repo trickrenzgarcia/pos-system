@@ -38,7 +38,7 @@ export default async function LoginPage({ params, searchParams }: LoginPageParam
           <div className="flex items-center gap-4">
             <ModeToggle />
             <Link href="/demo">
-              <Button variant="default" size="default" className="bg-blue-500">Demo</Button>
+              <Button variant="default" size="default" className="bg-blue-500 text-white hover:bg-blue-600">Demo</Button>
             </Link>
           </div>
         </nav>

@@ -27,7 +27,16 @@ export const categories = pgTable("category", {
   category: text("category").notNull().unique(),
   icon: text("icon").notNull(),
   created_at: timestamp("created_at", { mode: "date" }).notNull(),
-})
+});
+
+export const auditLog = pgTable("audit_log", {
+  id: uuid("id").notNull().primaryKey(),
+  user_id: text("user_id").notNull(),
+  action: text("action").notNull(),
+  entity: text("entity").notNull(),
+  entity_id: text("entity_id").notNull(),
+  created_at: timestamp("created_at", { mode: "date" }).notNull(),
+});
 
 export const rolesEnum = pgEnum("role", ["user", "admin"]);
 

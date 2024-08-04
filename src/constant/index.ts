@@ -3,6 +3,7 @@ export const ACCEPTED_IMAGE_TYPES = [
   "image/jpg",
   "image/jpeg",
   "image/gif",
+  "image/avif",
   "image/webp",
   "image/bmp",
   "image/tiff",

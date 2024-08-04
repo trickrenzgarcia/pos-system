@@ -13,9 +13,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { Archive, ArrowUpDown, ChevronDown, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -39,6 +38,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Product } from "@/app/actions";
+import EditMode from "./EditMode";
+import TrashDialog from "./TrashDialog";
+import ArchiveDialog from "./ArchiveDialog";
  
 export const columns: ColumnDef<Product>[] = [
   {
@@ -54,7 +56,7 @@ export const columns: ColumnDef<Product>[] = [
             width={40}
             height={40}
           />
-          <AvatarFallback>N/A</AvatarFallback>
+          <AvatarFallback className="rounded-sm">...</AvatarFallback>
         </Avatar>
       </div>
     ),
@@ -154,14 +156,23 @@ export const columns: ColumnDef<Product>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem asChild>
+              <EditMode product={product} />
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <TrashDialog product={product} />
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <ArchiveDialog product={product} />
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(product.id)}
+              onClick={() => navigator.clipboard.writeText(product.slug)}
             >
               Copy product ID
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={`/product/${product.slug}`}>
+              <Link href={`/demo/product/${product.slug}`}>
                 View product details
               </Link>
             </DropdownMenuItem>
@@ -208,13 +219,11 @@ export default function ProductsDataTable({ products }: { products: Product[] })
       const category = row.getValue<Product["category"]>("category").toLowerCase();
       const price = row.getValue<Product["price"]>("price").toString();
       const stock = row.getValue<Product["stock"]>("stock").toString();
-      const slug = row.getValue<Product["slug"]>("slug").toLowerCase();
       return (
         name.includes(searchValue) ||
         category.includes(searchValue) ||
         price.includes(searchValue) ||
-        stock.includes(searchValue) ||
-        slug.includes(searchValue)
+        stock.includes(searchValue)
       )
     }
   });

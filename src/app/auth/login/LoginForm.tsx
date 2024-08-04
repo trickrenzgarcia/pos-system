@@ -115,7 +115,7 @@ export default function LoginForm() {
             </div>
 
             <div className="mt-8 flex flex-col gap-3">
-              <Button type="submit" className="w-full bg-blue-500" disabled={loading}>
+              <Button type="submit" className="w-full bg-blue-500 text-white hover:bg-blue-600" disabled={loading}>
                 {loading ? <Loader2 className="animate-spin"/> : "Login"}
               </Button>
               <SignInButton provider={{ id: "google", name: "Google" }} />

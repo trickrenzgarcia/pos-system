@@ -33,8 +33,8 @@ export default function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="w-8 h-8">
-            <AvatarImage  src={session?.user.image!} />
-            <AvatarFallback>{session?.user.name}</AvatarFallback>
+            <AvatarImage src={session?.user.image!} />
+            <AvatarFallback>{session?.user.name ? session.user.name : ""}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -42,8 +42,10 @@ export default function UserNav() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none flex items-center gap-1">
-              {session?.user.name}
-              <span className="text-[11px] dark:text-black bg-purple-300 px-[3px] rounded-sm py-[2px]">{session?.user.role}</span>
+              {session?.user.name ? session.user.name : "Demo User"}
+              <span className="text-[11px] dark:text-black bg-purple-300 px-[3px] rounded-sm py-[2px]">
+                {session?.user.role ? session.user.role : "Admin"}
+              </span>
             </p>
             <p className="text-xs leading-none text-muted-foreground">
               {session?.user.email}
@@ -75,7 +77,16 @@ export default function UserNav() {
           <Label htmlFor="mode" className="text-sm">Dark Mode</Label>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut()}>
+        <DropdownMenuItem onClick={() => {
+          if(!session?.user.role) {
+            router.push('/auth/login')
+            router.refresh()
+          } else {
+            signOut()
+            router.push('/auth/login')
+            router.refresh()
+          }
+        }}>
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>

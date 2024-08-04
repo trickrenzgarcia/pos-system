@@ -5,6 +5,8 @@ import { Hono } from 'hono'
 import { handle } from 'hono/vercel'
 import { ref, uploadBytesResumable, UploadTaskSnapshot } from 'firebase/storage'
 import { storage } from '@/app/firebase'
+import { ReqProduct } from '@/types/api-types'
+import { generateRandomString } from '@/lib/utils'
 
 export const runtime = 'edge'
 
@@ -16,53 +18,36 @@ app.get('/hello', async (c) => {
 })
 
 app.post('/product', async (c) => {
-  const body = await c.req.parseBody();
-  const file: File = body['file'] as File;
+  const { name, category, image, price, stock  } = await c.req.parseBody();
+  const slug = generateRandomString();
 
-  if(!file) {
-    return c.json({ message: 'No file uploaded', status: 400 }, { status: 400, statusText: 'Bad Request' })
-  } else if(file.size > 1000000) {
-    return c.json({ message: 'File size too large', status: 400 }, { status: 400, statusText: 'Bad Request' })
-  } else if(!file.type.includes('image')) {
-    return c.json({ message: 'Invalid file type', status: 400 }, { status: 400, statusText: 'Bad Request' })
+  const exists = await db.select().from(product).where(eq(product.name, name as string))
+  const dbCat = await db.select().from(categories).where(eq(categories.id, category as string))
+
+  if (exists.length) {
+    return c.json({ message: 'Product already exists', status: 400 }, { status: 400, statusText: 'Bad Request' })
   } else {
-    const storageRef = ref(storage, `products/${file.name}`)
-    const uploadTask = uploadBytesResumable(storageRef, file)
-
-    uploadTask.on('state_changed',
-      (snapshot: UploadTaskSnapshot) => {
-        // Progress function
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      },
-      error => {
-        return c.json({ 
-          message: 'An error occurred',
-          status: 500,
-          reason: error.message,
-          cause: error.cause
-        }, { status: 500, statusText: 'Internal Server Error' })
-      },
-      () => {
-        // Upload completed successfully
-        return c.json({ 
-          message: 'File uploaded successfully',
-          status: 200,
-          url: uploadTask.snapshot.ref.fullPath
-        }, { status: 200, statusText: 'OK' })
-      }
-    )
-
+    if (!dbCat.length) {
+      return c.json({ message: 'Category does not exist', status: 404 }, { status: 404, statusText: 'Not Found' })
+    } else {
+      const data = await db.insert(product).values({
+        id: crypto.randomUUID(),
+        slug: slug,
+        name: name as string,
+        category: dbCat[0].category,
+        image: image as string,
+        price: parseFloat(price as string),
+        stock: parseInt(stock as string),
+        created_at: new Date(),
+      }).returning();
+      return c.json(data, 201)
+    }
   }
-  return c.json(body)
-  // const data = await db.insert(product).values({
-  //   id: crypto.randomUUID(),
-  //   slug: 'test-product',
-  //   name: 'Test Product',
-  //   category: 'test',
-  //   price: 100.00,
-  //   stock: 100,
-    
-  // })
+})
+
+app.get('/products', async (c) => {
+  const data = await db.select().from(product).orderBy(product.created_at)
+  return c.json(data)
 })
 
 app.get('/products/category', async (c) => {
@@ -93,7 +78,7 @@ app.post('/products/category', async (c) => {
       icon: icon,
       created_at: new Date(),
     }).returning()
-    return c.json(data)
+    return c.json(data, 201)
   }
 })
 

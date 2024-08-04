@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 import Navbar from "@/components/Navbar";
+import { headers } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +24,6 @@ export default async function RootLayout({
 }>) {
   const session = await auth();
 
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
@@ -35,7 +35,7 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <main>
-              {session && session.user.role === "admin" && <Navbar />}
+              {<Navbar />}
               {children}
               <Toaster />
               <SonnerToaster />

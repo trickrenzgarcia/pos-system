@@ -21,6 +21,17 @@ export type Category = {
   created_at: string
 }
 
+export async function getProducts() {
+  const res = await fetch(process.env.BASE_URL + '/api/products', {
+    cache: 'no-store',
+    next: {
+      tags: ['products', 'product']
+    }
+  });
+  const data = await res.json();
+  return data as Product[];
+}
+
 export async function getCategories() {
   return await fetch(process.env.BASE_URL+'/api/products/category', {
     cache: 'no-store',
@@ -53,14 +64,9 @@ export async function createProduct(data: Omit<Product, 'id' | 'slug' | 'created
   formData.append('price', data.price.toString());
   formData.append('stock', data.stock.toString());
   formData.append('image', data.image);
-  const res = await fetch(process.env.BASE_URL+"/api/product", {
+  await fetch(process.env.BASE_URL+"/api/product", {
     method: "POST",
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
     body: formData
   })
   revalidateTag('product')
-  const returnData = await res.json()
-  return returnData;
 }
